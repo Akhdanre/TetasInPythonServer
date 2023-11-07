@@ -11,11 +11,13 @@ app = FastAPI()
 
 messages = []
 
+
 @app.post("/api/value")
 async def value(item: Item):
     global messages
     messages.append(item.message)
-    return {"status": "ok"}
+    return {"status": "ok",
+         "condition" : True}
 
 STREAM_DELAY = 1
 RETRY_TIMEOUT = 15000
