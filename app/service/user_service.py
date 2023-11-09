@@ -1,12 +1,13 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from .validation_service import ValidationService
+from fastapi import HTTPException, status
+import sys
+
+sys.path.append("..")
 from app.model import models
 from app.schema.register_request import RegisterRequest
 from app.schema.web_response_schema import WebResponse
-from .validation_service import ValidationService
-from fastapi import HTTPException, status
-import json
-
 
 class User:
     def register(user: RegisterRequest, db: Session):

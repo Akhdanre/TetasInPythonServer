@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append("..")
 from app.database.dbConfig import SessionLocal 
 
 def get_db():
