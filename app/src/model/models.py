@@ -9,6 +9,9 @@ class UserModel(Base):
     password = Column(String(100), index=True)
     name = Column(String(100), index=True)
     token = Column(String(100), index=True)
+    
+    def __repr__(self):
+        return f"UserModel('{self.username}', '{self.password}', {self.name})"
 
 class InkubatorsModel(Base):
     __tablename__ = "inkubators"

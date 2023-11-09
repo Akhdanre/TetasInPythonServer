@@ -1,7 +1,3 @@
 
-
-class User:
-    
-
-    def regsiter(Username, password, name):
+def regsiter(Username, password, name):
         return None
