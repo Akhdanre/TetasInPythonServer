@@ -1,17 +1,22 @@
-from sqlalchemy import String, Column, Integer, Date
+from sqlalchemy import String, Column, Integer, Date, ForeignKey
 from database.dbConfig import Base
-
+from sqlalchemy.orm import relationship
 
 class UserModel(Base):
     __tablename__ = "users"
 
     username = Column(String(100), primary_key=True, unique=True, index=True)
-    password = Column(String(100), index=True)
-    name = Column(String(100), index=True)
-    token = Column(String(100), index=True)
-    
-    def __repr__(self):
-        return f"UserModel('{self.username}', '{self.password}', {self.name})"
+    password = Column(String(100), nullable=False)
+    name = Column(String(100), nullable=False)
+    token = Column(String(100))
+
+    inkubators = relationship("InkubatorsModel", back_populates="user")
+
+    # def __repr__(self):
+    #     return {
+    #         "username ": self.username,
+    #         "name" : self.name
+    #     }
 
 class InkubatorsModel(Base):
     __tablename__ = "inkubators"
@@ -23,14 +28,18 @@ class InkubatorsModel(Base):
     min_humd = Column(Integer)
     max_humd = Column(Integer)
     water_volume = Column(Integer)
-    username = Column(String(100))
+    username = Column(String(100), ForeignKey("users.username"))  
 
+    user = relationship("UserModel", back_populates="inkubators")
+    hatch_data = relationship("HatchDataModel", back_populates="inkubator")
 
 class HatchDataModel(Base):
     __tablename__ = "hatch_data"
 
-    id  = Column(Integer, primary_key=True, index=True)
-    inkubator_id = Column(Integer, nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    inkubator_id = Column(Integer, ForeignKey("inkubators.id"))  # Foreign key relationship
     start_data = Column(Date)
     end_data_estimation = Column(Date)
     number_of_egg = Column(Integer)
+
+    inkubator = relationship("InkubatorsModel", back_populates="hatch_data")
