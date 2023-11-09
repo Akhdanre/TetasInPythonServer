@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 import uvicorn
-from routes import api_router
-from model import models
-from database import dbConfig
+from app.routes import api_router
+from app.model import models
+from app.database import dbConfig
 from contextlib import asynccontextmanager
 
 

@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from model import models
-from schema.register_request import RegisterRequest
-from schema.web_response_schema import WebResponse
+from app.model import models
+from app.schema.register_request import RegisterRequest
+from app.schema.web_response_schema import WebResponse
 from .validation_service import ValidationService
 from fastapi import HTTPException, status
 import json

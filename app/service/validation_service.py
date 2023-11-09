@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from model import models
+from app.model import models
 
 
 class ValidationService:

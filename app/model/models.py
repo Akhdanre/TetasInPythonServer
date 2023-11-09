@@ -1,5 +1,5 @@
 from sqlalchemy import String, Column, Integer, Date, ForeignKey
-from database.dbConfig import Base
+from app.database.dbConfig import Base
 from sqlalchemy.orm import relationship
 
 class UserModel(Base):
