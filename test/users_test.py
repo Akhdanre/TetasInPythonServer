@@ -13,7 +13,7 @@ def test_register_succes():
     User.deleteAllUsers()
 
     response = client.post(
-        "/api/register",
+        "/api/user",
         json={
             "username": "akeoneuefo",
             "password": "superone",
@@ -28,7 +28,7 @@ def test_register_duplicate():
     User.deleteAllUsers()
 
     responseSample= client.post(
-        "/api/register",
+        "/api/user",
         json={
             "username": "akeoneuefo",
             "password": "superone",
@@ -37,7 +37,7 @@ def test_register_duplicate():
     )
 
     response = client.post(
-        "/api/register",
+        "/api/user",
         json={
             "username": "akeoneuefo",
             "password": "superone",
@@ -52,7 +52,7 @@ def test_register_failed():
     User.deleteAllUsers()
 
     response = client.post(
-        "/api/register",
+        "/api/user",
         json={
             "username": "",
             "password": "",

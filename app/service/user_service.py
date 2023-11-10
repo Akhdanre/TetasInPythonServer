@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from .validation_service import ValidationService
 from fastapi import HTTPException, status
 from uuid import uuid4
-from utils.deps import get_password_context
+from app.utils.deps import get_password_context
 
 
 class User:
@@ -22,7 +22,7 @@ class User:
                 detail="username already exist"
             )
         try:
-            hashPassword = get_password_context.hash(user.password)
+            hashPassword = get_password_context().hash(user.password)
             db_user = models.UserModel(
                 username=user.username,
                 password=hashPassword,
@@ -42,7 +42,7 @@ class User:
         exist_user = db.query(models.UserModel).filter_by(token=apiToken).first()
         if exist_user:
             try:
-                exist_user.password = get_password_context.hash(user.password)
+                exist_user.password = get_password_context().hash(user.password)
                 exist_user.name = user.name
 
                 db.commit()
