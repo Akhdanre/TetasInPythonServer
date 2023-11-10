@@ -15,14 +15,21 @@ Request Body :
 Response Body (Success): 
 ```json
 {
-    "message" : "register success"
+    "data" : "ok"
 }
 ```
 
 Response Body (failed) : 
 ```json 
 {
-    "error" : "error"
+    "detail" : "username must not blank"
+}
+```
+
+Response Body (failed duplicat) : 
+```json 
+{
+    "detail" : "username already exist"
 }
 ```
 

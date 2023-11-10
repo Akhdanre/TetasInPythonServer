@@ -23,3 +23,26 @@ def test_register_succes():
 
     assert response.status_code == 200
     assert response.json() == {"data": "ok"}
+
+def test_register_failed():
+    User.deleteAllUsers()
+
+    responseSample= client.post(
+        "/api/register",
+        json={
+            "username": "akeoneuefo",
+            "password": "superone",
+            "name": "akeoneufo",
+        },
+    )
+
+    response = client.post(
+        "/api/register",
+        json={
+            "username": "akeoneuefo",
+            "password": "superone",
+            "name": "akeoneufo",
+        },
+    )
+
+    assert response.status_code == 400
