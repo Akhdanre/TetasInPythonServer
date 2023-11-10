@@ -10,7 +10,7 @@ client = TestClient(app)
 
 
 def test_register_succes():
-    deleteStatus = User.deleteAllUsers()
+    User.deleteAllUsers()
 
     response = client.post(
         "/api/register",
@@ -24,7 +24,7 @@ def test_register_succes():
     assert response.status_code == 200
     assert response.json() == {"data": "ok"}
 
-def test_register_failed():
+def test_register_duplicate():
     User.deleteAllUsers()
 
     responseSample= client.post(
@@ -46,3 +46,19 @@ def test_register_failed():
     )
 
     assert response.status_code == 400
+
+
+def test_register_failed():
+    User.deleteAllUsers()
+
+    response = client.post(
+        "/api/register",
+        json={
+            "username": "",
+            "password": "",
+            "name": "",
+        },
+    )
+
+    assert response.status_code == 400
+        # assert response.json() == {"data": "ok"}

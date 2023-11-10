@@ -8,6 +8,7 @@ from app.model import models
 
 class ValidationService:
     def validation(username, db: Session):
+        
         try:
             user_db = db.query(models.UserModel).filter_by(
                 username=username).first()

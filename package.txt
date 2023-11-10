@@ -1,0 +1,6 @@
+uvicorn
+sqlalchemy
+pydantic
+pytest
+
+passlib[bcrypt]
