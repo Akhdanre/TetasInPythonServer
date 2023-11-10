@@ -1,7 +1,7 @@
 # User API Spec
 
 ## Register
-Endpoint : post /api/register
+Endpoint : post /api/user
 
 Request Body :
 ```json
@@ -62,13 +62,15 @@ Response Body (failed) :
 }
 ```
 
-## udpate user data 
-Endpoint : patch /api/udpateUser
+## update user data 
+Endpoint : patch /api/user/update
+
+header body :
+- X-API-TOKEN = "klajsdlkjf"
 
 Request Body : 
 ```json
 {
-    "oldpassword" : "superone" ,
     "password" : "supersepo", // new password
     "name" : "dani" // new name
 }

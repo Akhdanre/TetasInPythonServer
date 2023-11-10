@@ -1,18 +1,19 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
 from sqlalchemy.orm import Session
-
-import sys
-
-sys.path.append("..")
 from app.utils.deps import get_db
-from app.schema.register_request import RegisterRequest
+import app.schema as schema
 from app.service.user_service import User
+from typing import Annotated, Union
+
 
 router = APIRouter()
 
 
-@router.post("/api/register")
-def register_controller(user: RegisterRequest, db: Session = Depends(get_db)):
-    return User.register(user,db)
-     
+@router.post("/api/user")
+def register_controller(user: schema.RegisterRequest, db: Session = Depends(get_db)):
+    return User.register(user, db)
 
+
+@router.post("/api/user/update")
+def register_controller(user: schema.UserUpdateRequest, X_API_TOKEN: Annotated[Union[str, None], Header()] = None, db: Session = Depends(get_db)):
+    return User.updateUsers(user, X_API_TOKEN, db)

@@ -16,7 +16,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+@app.get("/")
+def home():
+    return {"data": "selamat datang"}
+
+
 app.include_router(api_router)
-
-
-

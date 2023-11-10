@@ -1,8 +1,5 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-import sys
-
-sys.path.append("..")
 from app.model import models
 
 
