@@ -31,4 +31,24 @@ class Authetication:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail={"errors": e}
             )
-    
+
+    def logout(token: str, db: Session):
+        try:
+            user = db.query(models.UserModel).filter_by(
+                token=token).first()
+            if user is not None:
+                user.token = None
+                db.commit()
+                db.refresh(user)
+                return schema.WebResponse(data="ok")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail={
+                    "errors": "user unauthorized"
+                }
+            )
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={"errors": e}
+            )

@@ -99,6 +99,6 @@ header body :
 Response Body : 
 ```json
 {
-    "message" : "logout success"
+    "data" : "ok"
 }
 ```

@@ -80,7 +80,7 @@ def test_update_user():
     )
     res = response.json()
     data = res["data"]
-    responseUpdate = client.post(
+    responseUpdate = client.patch(
         "/api/user/update",
         headers={
             "X-API-TOKEN" : data["token"]

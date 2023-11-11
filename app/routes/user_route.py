@@ -14,6 +14,6 @@ def register_controller(user: schema.RegisterRequest, db: Session = Depends(get_
     return User.register(user, db)
 
 
-@router.post("/api/user/update")
+@router.patch("/api/user/update")
 def register_controller(user: schema.UserUpdateRequest, X_API_TOKEN: Annotated[Union[str, None], Header()] = None, db: Session = Depends(get_db)):
     return User.updateUsers(user, X_API_TOKEN, db)
