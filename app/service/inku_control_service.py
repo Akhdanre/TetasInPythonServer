@@ -37,9 +37,7 @@ class InkubatorControlService:
                         inkubator_data[1].put_nowait(new_message)
                         return JSONResponse({"data": "ok"})
                     else:
-                        print(
-                            f"Inkubator with id {request.target_id} not online")
-                        return JSONResponse({"data": "inkubator not online"}, 400)
+                        return JSONResponse({"data": "Inkubator with id {request.target_id} not online"}, 400)
                 if request.condition is False and (len(client_data.connected_inku_client) > 0):
                     for data in client_data.connected_inku_client.values():
                         data[1].put_nowait(new_message)
