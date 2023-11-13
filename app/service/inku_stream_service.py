@@ -1,5 +1,5 @@
 import asyncio
-from app.model.inku_modul_client import connected_inku_client
+from app.model.client_data import connected_inku_client
 
 
 class InkuStreamService:

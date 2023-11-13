@@ -19,6 +19,6 @@ async def message_stream(request: Request, user_id: str, token: str):
         ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
 
 
-@routeInku.post("/data")
+@routeInku.post("/api/control/temp")
 def message_data(data: InkuTempRequest, db: Session = Depends(get_db)):
-    return InkubatorControlService.tempControl(data, db)
+    return InkubatorControlService().tempControl(request=data, db=db)
