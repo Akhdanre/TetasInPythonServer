@@ -13,9 +13,8 @@ class InkubatorControlService:
 
     def tempControl(self, request: InkuTempRequest, db: Session):
         try:
-            print(request.target_id, request.target_token)
-            inkubator = db.query(
-                models.InkubatorsModel).filter_by(id=request.target_id).first()
+            inkubator = db.query(models.InkubatorsModel).filter_by(
+                id=request.target_id).first()
             if inkubator:
                 inkubator.min_temp = request.min_temp
                 inkubator.max_temp = request.max_temp
@@ -31,15 +30,23 @@ class InkubatorControlService:
                     }
                 }
                 if request.condition:
-                    if request.target_id in client_data.connected_inku_client:
-                        client_data.connected_inku_client[request.target_id][1].put_nowait(
-                            new_message)
+                    print("data", client_data.connected_inku_client)
+                    if str(request.target_id) in client_data.connected_inku_client:
+                        inkubator_data = client_data.connected_inku_client[str(
+                            request.target_id)]
+                        inkubator_data[1].put_nowait(new_message)
                         return JSONResponse({"data": "ok"})
-                    return JSONResponse({"data": "inkubator doesn't exist"}, 400)
-                if (len(client_data.connected_inku_client) > 0):
-                    for client_id, data in client_data.connected_inku_client.items():
+                    else:
+                        print(
+                            f"Inkubator with id {request.target_id} not online")
+                        return JSONResponse({"data": "inkubator not online"}, 400)
+                if request.condition is False and (len(client_data.connected_inku_client) > 0):
+                    for data in client_data.connected_inku_client.values():
                         data[1].put_nowait(new_message)
                     return JSONResponse({"data": "ok"})
+                return JSONResponse({"data": "something odd"})
+
+            print(f"data : {inkubator.id}")
             raise HTTPException(400, detail="inkubator not found")
         except SQLAlchemyError as e:
             raise HTTPException(
