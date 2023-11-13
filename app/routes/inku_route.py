@@ -20,4 +20,4 @@ async def message_stream(request: Request, user_id: str, token: str):
 
 @routeInku.post("/api/control/temp")
 def message_data(data: InkuTempRequest, db: Session = Depends(get_db)):
-    return InkubatorControlService().tempControl(request=data, db=db)
+    return InkubatorControlService().inkuControlTempHumd(request=data, db=db)

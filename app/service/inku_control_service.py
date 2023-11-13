@@ -11,7 +11,7 @@ class InkubatorControlService:
     def __init__(self):
         self.RETRY_TIMEOUT = 15000
 
-    def tempControl(self, request: InkuTempRequest, db: Session):
+    def inkuControlTempHumd(self, request: InkuTempRequest, db: Session):
         try:
             inkubator = db.query(models.InkubatorsModel).filter_by(
                 id=request.target_id).first()
@@ -21,30 +21,34 @@ class InkubatorControlService:
                 db.commit()
                 db.refresh(inkubator)
                 new_message = {
-                    "event": "new_message",
-                    "id": "message_id",
                     "retry": self.RETRY_TIMEOUT,
                     "data": {
-                        "max": request.max_temp,
-                        "min": request.min_temp
+                        "temp": {
+                            "max": request.max_temp,
+                            "min": request.min_temp
+                        },
+                        "humd": {
+                            "max": request.max_humd,
+                            "min": request.min_humd
+                        }
+
                     }
                 }
-                if request.condition:
-                    print("data", client_data.connected_inku_client)
-                    if str(request.target_id) in client_data.connected_inku_client:
-                        inkubator_data = client_data.connected_inku_client[str(
-                            request.target_id)]
-                        inkubator_data[1].put_nowait(new_message)
-                        return JSONResponse({"data": "ok"})
-                    else:
-                        return JSONResponse({"data": "Inkubator with id {request.target_id} not online"}, 400)
-                if request.condition is False and (len(client_data.connected_inku_client) > 0):
-                    for data in client_data.connected_inku_client.values():
-                        data[1].put_nowait(new_message)
+                if str(request.target_id) in client_data.connected_inku_client:
+                    inkubator_data = client_data.connected_inku_client[str(
+                        request.target_id)]
+                    inkubator_data[1].put_nowait(new_message)
                     return JSONResponse({"data": "ok"})
-                return JSONResponse({"data": "something odd"})
+                else:
+                    return JSONResponse({"data": "Inkubator with id {request.target_id} not online"}, 400)
 
-            print(f"data : {inkubator.id}")
+                # this condition is for all change inkubator temp
+
+                # if request.condition is False and (len(client_data.connected_inku_client) > 0):
+                #     for data in client_data.connected_inku_client.values():
+                #         data[1].put_nowait(new_message)
+                #     return JSONResponse({"data": "ok"})
+                # return JSONResponse({"data": "something odd"}, 400)
             raise HTTPException(400, detail="inkubator not found")
         except SQLAlchemyError as e:
             raise HTTPException(
