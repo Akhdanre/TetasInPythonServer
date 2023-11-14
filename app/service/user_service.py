@@ -14,7 +14,7 @@ class User:
     def register(user: schema.RegisterRequest, db: Session):
         if user.username == "" and user.password == "" and user.name == "":
             raise ExceptionCustom(
-                status_code=400, detail="field cant blank!!!")
+                status_code=402, detail="field cant blank!!!")
         if ValidationService.validation(user.username, db):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
