@@ -7,15 +7,14 @@ from .validation_service import ValidationService
 from fastapi import HTTPException, status
 from uuid import uuid4
 from app.utils.deps import get_password_context
+from app.utils.exception_handler import ExceptionCustom
 
 
 class User:
     def register(user: schema.RegisterRequest, db: Session):
         if user.username == "" and user.password == "" and user.name == "":
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Fields must not be blank"
-            )
+            raise ExceptionCustom(
+                status_code=400, detail="field cant blank!!!")
         if ValidationService.validation(user.username, db):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -39,7 +38,8 @@ class User:
             )
 
     def updateUsers(user: schema.UserUpdateRequest, apiToken: str, db: Session):
-        exist_user = db.query(models.UserModel).filter_by(token=apiToken).first()
+        exist_user = db.query(models.UserModel).filter_by(
+            token=apiToken).first()
         if exist_user:
             try:
                 exist_user.password = get_password_context().hash(user.password)
@@ -58,5 +58,3 @@ class User:
                 db.commit()
                 return True
             return False
-
-    
