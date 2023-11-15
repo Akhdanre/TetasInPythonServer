@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from app.model import models
-from app.model import client_data
+from sqlalchemy import desc
+from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data
 from app.schema import InkuTempRequest
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
@@ -14,7 +14,7 @@ class InkubatorControlService:
 
     def inkuControlTempHumd(self, request: InkuTempRequest, db: Session):
         try:
-            inkubator = db.query(models.InkubatorsModel).filter_by(
+            inkubator = db.query(InkubatorsModel).filter_by(
                 id=request.target_id).first()
             if inkubator:
                 inkubator.temp_limit = request.temp_limit
@@ -51,7 +51,7 @@ class InkubatorControlService:
 
     def getInfoInku(token_request: str, db: Session):
         try:
-            inkubator = db.query(models.InkubatorsModel).filter_by(
+            inkubator = db.query(InkubatorsModel).filter_by(
                 token=token_request).first()
             if inkubator:
                 return WebResponseData(data={
@@ -63,3 +63,38 @@ class InkubatorControlService:
         except SQLAlchemyError as e:
             raise ExceptionCustom(
                 status_code=400, detail=str(e))
+
+    def hatch_data_to_dict(self, hatch_data):
+        return [
+            {
+                'id': entry.id,
+                'inkubator_id': entry.inkubator_id,
+                'start_data': entry.start_date.isoformat() if entry.start_date else None,
+                'end_data_estimation': entry.end_date_estimation.isoformat() if entry.end_date_estimation else None,
+                'number_of_egg': entry.number_of_eggs,
+            }
+            for entry in hatch_data
+        ]
+    
+    def getDataReport(self, header_token: str, db: Session):
+        print(header_token)
+        try:
+            # First, find the user based on the provided token
+            user = db.query(UserModel).filter_by(token=header_token).first()
+
+            if user:
+                # If the user is found, get the hatch data associated with the user
+                hatch_data = db.query(HatchDataModel).join(InkubatorsModel).filter(
+                    InkubatorsModel.username == user.username
+                ).order_by(desc(HatchDataModel.id)).all()
+                data_result = self.hatch_data_to_dict(hatch_data)
+                # Now, 'hatch_data' contains a list of HatchDataModel objects associated with the user
+                return WebResponseData(data=data_result)
+            else:
+                # Handle the case where the user with the provided token is not found
+                return WebResponseData(errors="data None", code=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            # Handle exceptions as needed
+            print(f"Error retrieving data: {e}")
+            return None
+        

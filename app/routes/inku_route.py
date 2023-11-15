@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Header
 from sqlalchemy.orm import Session
 from app.utils.deps import get_db
 from sse_starlette import EventSourceResponse, ServerSentEvent
@@ -6,6 +6,7 @@ from app.service.inku_stream_service import InkuStreamService
 from app.service.inku_control_service import InkubatorControlService
 from datetime import datetime
 from app.schema import InkuTempRequest
+from typing import Annotated, Union
 
 routeInku = APIRouter()
 
@@ -21,7 +22,7 @@ async def message_stream(request: Request, user_id: str, token: str):
 
 
 # http method
-@routeInku.post("/api/control/temp")
+@routeInku.post("/api/control/temp_humd")
 def message_data(data: InkuTempRequest, db: Session = Depends(get_db)):
     return InkubatorControlService().inkuControlTempHumd(request=data, db=db)
 
@@ -29,3 +30,8 @@ def message_data(data: InkuTempRequest, db: Session = Depends(get_db)):
 @routeInku.get("/api/inku/info/{token}")
 def get_info(token: str, db: Session = Depends(get_db)):
     return InkubatorControlService.getInfoInku(token, db)
+
+
+@routeInku.get("/api/data/report")
+def get_data_report(X_API_TOKEN: Annotated[Union[str, None], Header()] = None, db: Session = Depends(get_db)):
+    return InkubatorControlService().getDataReport(X_API_TOKEN, db)

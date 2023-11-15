@@ -52,9 +52,9 @@ Response Body :
 ```
 
 
-## temp control
+## temp and humd control
 
-Endpoint : patch /api/tempControl
+Endpoint : patch /api/control/temp_humd
 
 Header Body :
 - X-API-TOKEN : "Token"
@@ -62,8 +62,10 @@ Header Body :
 Request Body :
 ```json
 {
-    "newMinTemp" : 38,
-    "newMaxTemp" : 40
+    "target_id" : 1,
+    "target_token" : "ksdjle",
+    "temp_limit" : 38,
+    "humd_limit" : 40
 }
 ```
 
@@ -71,28 +73,6 @@ Response Body :
 ```json
 {
    "message" : "success change min and max inkubator temperature"
-}
-```
-
-
-## humd control
-Endpoint : patch /api/humdControl
-
-Header Body :
-- X-API-TOKEN : "Token"
-
-Request Body :
-```json
-{
-    "newMinHumd" : 38,
-    "newMaxHumd" : 40
-}
-```
-
-Response Body : 
-```json
-{
-   "message" : "success change min and max inkubator humidity"
 }
 ```
 
@@ -105,7 +85,7 @@ Header Body :
 Response Body : 
 ```json
 {
-    "data" : [ // desc data
+    "data" : [ // desc data with 10 data
         {
             "id_report" : 2,
             "date_start" : "2/1/2024",

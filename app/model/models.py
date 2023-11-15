@@ -45,8 +45,8 @@ class HatchDataModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     inkubator_id = Column(Integer, ForeignKey(
         "inkubators.id"))  # Foreign key relationship
-    start_data = Column(Date)
-    end_data_estimation = Column(Date)
-    number_of_egg = Column(Integer)
+    start_date = Column(Date)
+    end_date_estimation = Column(Date)
+    number_of_eggs = Column(Integer)
 
     inkubator = relationship("InkubatorsModel", back_populates="hatch_data")
