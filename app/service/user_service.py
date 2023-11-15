@@ -5,9 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from .validation_service import ValidationService
 from fastapi import HTTPException, status
-from uuid import uuid4
-from app.utils.deps import get_password_context
-from app.utils.exception_handler import ExceptionCustom
+from app.utils import get_password_context, ExceptionCustom, WebResponseData
 
 
 class User:
@@ -16,10 +14,8 @@ class User:
             raise ExceptionCustom(
                 status_code=400, detail="field can't blank!!!")
         if ValidationService.validation(user.username, db):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="username already exist"
-            )
+            raise ExceptionCustom(
+                status_code=400, detail="username already exist")
         try:
             hashPassword = get_password_context().hash(user.password)
             db_user = models.UserModel(
@@ -30,12 +26,10 @@ class User:
             db.add(db_user)
             db.commit()
             db.refresh(db_user)
-            return schema.WebResponse(data="ok")
+            return WebResponseData(data="ok")
         except SQLAlchemyError as e:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=str(e)
-            )
+            raise ExceptionCustom(
+                status_code=500, detail=str(e))
 
     def updateUsers(user: schema.UserUpdateRequest, apiToken: str, db: Session):
         exist_user = db.query(models.UserModel).filter_by(
@@ -48,7 +42,8 @@ class User:
                 db.commit()
                 db.refresh(exist_user)
             except SQLAlchemyError as e:
-                raise HTTPException
+                raise ExceptionCustom(
+                    status_code=500, detail=str(e))
 
     def deleteAllUsers():
         """delete all users data for testing, table must null for check"""
