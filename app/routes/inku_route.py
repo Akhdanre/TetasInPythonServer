@@ -4,6 +4,7 @@ from app.utils.deps import get_db
 from sse_starlette import EventSourceResponse, ServerSentEvent
 from app.service.inku_stream_service import InkuStreamService
 from app.service.inkubator_service import InkubatorControlService
+from app.service.image_procesing_service import ImageProccesingService
 from datetime import datetime
 from app.schema import InkuTempRequest
 from typing import Annotated, Union
@@ -56,16 +57,11 @@ path = "assets/image"
 
 
 @routeInku.post("/api/inku/image")
-async def post_image(file: UploadFile):
+async def post_image(file: UploadFile, id : int):
     contents = await file.read()
-    file_path = f"{path}/image.png"
+    file_path = f"{path}/{file.filename}"
+    
+    with open(file_path, "wb") as image_file:
+        image_file.write(contents)
 
-    img = Image.open(io.BytesIO(contents))
-
-    # Perform image processing (example: convert to byte RGB)
-    processed_image = img.convert("RGB")
-    rgb_values = list(processed_image.getdata())
-
- 
-
-    return {"data": "ok"}
+    return ImageProccesingService().EggCrackDetection(file.filename)

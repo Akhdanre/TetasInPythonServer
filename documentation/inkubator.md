@@ -166,8 +166,8 @@ Response Body :
 <br><br>
 # Modul
 
-## Temp Update
-Server Sent Event
+## Temp Updte
+Server Sent Eavent
 
 Endpoint : Get /sse/mdl/tempcontrol
 
