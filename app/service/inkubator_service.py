@@ -3,8 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc
 from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data, DetailHatchDataModel
 from app.schema import InkuTempRequest
-from fastapi import HTTPException, status
-import json
+from fastapi import status
 from app.utils import WebResponseData, ExceptionCustom
 
 
