@@ -4,3 +4,4 @@ pydantic
 pytest
 
 passlib[bcrypt]
+joblib
