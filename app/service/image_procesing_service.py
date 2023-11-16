@@ -63,10 +63,10 @@ for filename in os.listdir(image_folder_path):
         }
         results.append(result)
 
-# Create a DataFrame from the results list
-df = pd.DataFrame(results)
+# # Create a DataFrame from the results list
+# df = pd.DataFrame(results)
 
-# Save the DataFrame to an Excel file
-excel_file_path = 'result_telur.xlsx'
-df.to_excel(excel_file_path, index=False)
-print(f"Results saved to {excel_file_path}")
+# # Save the DataFrame to an Excel file
+# excel_file_path = 'result_telur.xlsx'
+# df.to_excel(excel_file_path, index=False)
+# print(f"Results saved to {excel_file_path}")

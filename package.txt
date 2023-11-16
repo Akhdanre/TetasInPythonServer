@@ -5,3 +5,4 @@ pytest
 
 passlib[bcrypt]
 joblib
+python-multipart
