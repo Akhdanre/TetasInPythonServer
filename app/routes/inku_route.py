@@ -35,3 +35,8 @@ def get_info(token: str, db: Session = Depends(get_db)):
 @routeInku.get("/api/data/report")
 def get_data_report(X_API_TOKEN: Annotated[Union[str, None], Header()] = None, db: Session = Depends(get_db)):
     return InkubatorControlService().getDataReport(X_API_TOKEN, db)
+
+
+@routeInku.get("/api/data/report/detail/{id_data}")
+def get_data_report(id_data: int, X_API_TOKEN: Annotated[Union[str, None], Header()] = None, db: Session = Depends(get_db)):
+    return InkubatorControlService.getDetailReport(id_data, X_API_TOKEN, db)

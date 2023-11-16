@@ -50,7 +50,7 @@ class HatchDataModel(Base):
     number_of_eggs = Column(Integer)
 
     inkubator = relationship("InkubatorsModel", back_populates="hatch_data")
-    detail_hatch = relationship("DetailHatchDataModel", back_populates="hatch_data")
+    detail_hatch_relation = relationship("DetailHatchDataModel", back_populates="hatch_datas")
 
 class DetailHatchDataModel(Base):
     __tablename__ = "detail_hatch_data"
@@ -60,7 +60,7 @@ class DetailHatchDataModel(Base):
     temp = Column(Integer)
     humd = Column(Integer)
     water_volume = Column(Integer)
-    time = Column(String),
+    time_report = Column(String(12))
     date_report = Column(Date)
 
-    hatch_data = relationship("HatchDataModel", back_populates="detail_hatch_data")
+    hatch_datas = relationship("HatchDataModel", back_populates="detail_hatch_relation")

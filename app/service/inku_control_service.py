@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc
-from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data
+from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data, DetailHatchDataModel
 from app.schema import InkuTempRequest
 from fastapi import HTTPException, status
-from fastapi.responses import JSONResponse
+import json
 from app.utils import WebResponseData, ExceptionCustom
 
 
@@ -75,9 +75,8 @@ class InkubatorControlService:
             }
             for entry in hatch_data
         ]
-    
+
     def getDataReport(self, header_token: str, db: Session):
-        print(header_token)
         try:
             # First, find the user based on the provided token
             user = db.query(UserModel).filter_by(token=header_token).first()
@@ -97,4 +96,25 @@ class InkubatorControlService:
             # Handle exceptions as needed
             print(f"Error retrieving data: {e}")
             return None
-        
+
+    def getDetailReport(id: int, token: str, db: Session):
+        try:
+            data = db.query(DetailHatchDataModel).filter_by(
+                id_hatch_data=id).all()
+            if data:
+                listData = [
+                    {
+                        "id": entry.id,
+                        "id_hatch_data": entry.id_hatch_data,
+                        "temp": entry.temp,
+                        "humd": entry.humd,
+                        "water_volume": entry.water_volume,
+                        "time": entry.time_report,
+                        "date": str(entry.date_report)
+                    } for entry in data
+                ]
+                return WebResponseData(listData)
+            return WebResponseData(errors="data None", code=400)
+        except SQLAlchemyError as e:
+            print(e)
+            return None
