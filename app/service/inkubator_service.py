@@ -2,9 +2,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc
 from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data, DetailHatchDataModel
-from app.schema import InkuTempRequest
+from app.schema import InkuTempRequest, StartIncubateRequest
 from fastapi import status
 from app.utils import WebResponseData, ExceptionCustom
+from datetime import datetime, timedelta
 
 
 class InkubatorControlService:
@@ -100,6 +101,7 @@ class InkubatorControlService:
         try:
             data = db.query(DetailHatchDataModel).filter_by(
                 id_hatch_data=id).all()
+
             if data:
                 listData = [
                     {
@@ -117,3 +119,37 @@ class InkubatorControlService:
         except SQLAlchemyError as e:
             print(e)
             return None
+
+    def startIncubate(data: StartIncubateRequest,  db: Session):
+        tanggal_string = data.start_date
+
+        # Memisahkan string menjadi array
+        array_tanggal = tanggal_string.split('-')
+
+        # Mendapatkan tahun, bulan, dan tanggal dari array
+        tahun = int(array_tanggal[0])
+        bulan = int(array_tanggal[1])
+        tanggal = int(array_tanggal[2])
+        # Tanggal awal
+        tanggal_awal = datetime(tahun, bulan, tanggal)
+
+        # Menambahkan 7 hari
+        tanggal_kedepan = tanggal_awal + timedelta(days=7)
+        try:
+            insert = HatchDataModel(
+                inkubator_id=data.inkubator_id,
+                start_date=data.start_date,
+                end_date_estimation=tanggal_kedepan.strftime('%Y-%m-%d'),
+                number_of_eggs=data.number_of_egg
+            )
+            db.add(insert)
+            db.commit()
+            db.refresh(insert)
+        except SQLAlchemyError as e:
+            print(e)
+            return None
+
+    def inseerHatchDetail():
+        return {
+            "none": "super"
+        }

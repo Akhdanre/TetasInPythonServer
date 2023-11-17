@@ -62,5 +62,6 @@ class DetailHatchDataModel(Base):
     water_volume = Column(Integer)
     time_report = Column(String(12))
     date_report = Column(Date)
+    url_image = Column(String(100))
 
     hatch_datas = relationship("HatchDataModel", back_populates="detail_hatch_relation")
