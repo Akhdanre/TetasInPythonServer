@@ -122,22 +122,16 @@ class InkubatorControlService:
 
     def startIncubate(data: StartIncubateRequest,  db: Session):
         tanggal_string = data.start_date
-
-        # Memisahkan string menjadi array
         array_tanggal = tanggal_string.split('-')
-
-        # Mendapatkan tahun, bulan, dan tanggal dari array
         tahun = int(array_tanggal[0])
         bulan = int(array_tanggal[1])
         tanggal = int(array_tanggal[2])
-        # Tanggal awal
-        tanggal_awal = datetime(tahun, bulan, tanggal)
 
-        # Menambahkan 7 hari
+        tanggal_awal = datetime(tahun, bulan, tanggal)
         tanggal_kedepan = tanggal_awal + timedelta(days=7)
         try:
             insert = HatchDataModel(
-                inkubator_id=data.inkubator_id,
+                inkubator_id=data.id_inkubator,
                 start_date=data.start_date,
                 end_date_estimation=tanggal_kedepan.strftime('%Y-%m-%d'),
                 number_of_eggs=data.number_of_egg
@@ -145,6 +139,7 @@ class InkubatorControlService:
             db.add(insert)
             db.commit()
             db.refresh(insert)
+            return WebResponseData(data="ok")
         except SQLAlchemyError as e:
             print(e)
             return None
