@@ -6,7 +6,7 @@ from app.service.inku_stream_service import InkuStreamService
 from app.service.inkubator_service import InkubatorControlService
 from app.service.image_procesing_service import ImageProccesingService
 from datetime import datetime
-from app.schema import InkuTempRequest, StartIncubateRequest
+from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest
 from typing import Annotated, Union
 from PIL import Image
 import io
@@ -70,3 +70,8 @@ async def post_image(file: UploadFile, id: int):
 @routeInku.post("/api/usr/start/inku")
 def post_start_inkubating(request: StartIncubateRequest,  db: Session = Depends(get_db)):
     return InkubatorControlService().startIncubate(request, db)
+
+
+@routeInku.post("/api/inku/report")
+def post_report_inkubator(request : AddDetailHatchRequest, db: Session = Depends(get_db)):
+    return InkubatorControlService.insertHatchDetail(request, db)

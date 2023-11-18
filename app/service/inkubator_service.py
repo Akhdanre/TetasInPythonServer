@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc
 from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data, DetailHatchDataModel
-from app.schema import InkuTempRequest, StartIncubateRequest
+from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest
 from fastapi import status
 from app.utils import WebResponseData, ExceptionCustom
 from datetime import datetime, timedelta
@@ -138,9 +138,7 @@ class InkubatorControlService:
             new_message = {
                 "retry": self.RETRY_TIMEOUT,
                 "data": {
-                    "id": insert.id,
-                    # "temp": insert.temp_limit,
-                    # "humd": insert.humd_limit
+                    "id": insert.id
                 }
             }
             if str(data.id_inkubator) in client_data.connected_inku_client:
@@ -154,12 +152,20 @@ class InkubatorControlService:
             print(e)
             return None
 
-    # def insertHatchDetail():
-    #     try:
-    #         insert = DetailHatchDataModel(
-
-    #         )
-    #     except SQLAlchemyError as e :
-    #     return {
-    #         "none": "super"
-    #     }
+    def insertHatchDetail(request: AddDetailHatchRequest, db: Session):
+        try:
+            insert = DetailHatchDataModel(
+                id_hatch_data=request.id_hatch_data,
+                temp=request.temp,
+                humd=request.humd,
+                water_volume=request.water_volume,
+                time_report=datetime.now().strftime('%H:%M:%S'),
+                date_report=datetime.now().strftime('%Y-%m-%d')
+            )
+            db.add(insert)
+            db.commit()
+            db.refresh(insert)
+            return WebResponseData(data="ok")
+        except SQLAlchemyError as e:
+            print(e)
+            return None
