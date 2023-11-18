@@ -78,19 +78,15 @@ class InkubatorControlService:
 
     def getDataReport(self, header_token: str, db: Session):
         try:
-            # First, find the user based on the provided token
             user = db.query(UserModel).filter_by(token=header_token).first()
 
             if user:
-                # If the user is found, get the hatch data associated with the user
                 hatch_data = db.query(HatchDataModel).join(InkubatorsModel).filter(
                     InkubatorsModel.username == user.username
                 ).order_by(desc(HatchDataModel.id)).all()
                 data_result = self.hatch_data_to_dict(hatch_data)
-                # Now, 'hatch_data' contains a list of HatchDataModel objects associated with the user
                 return WebResponseData(data=data_result)
             else:
-                # Handle the case where the user with the provided token is not found
                 return WebResponseData(errors="data None", code=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             # Handle exceptions as needed
@@ -120,7 +116,7 @@ class InkubatorControlService:
             print(e)
             return None
 
-    def startIncubate(data: StartIncubateRequest,  db: Session):
+    def startIncubate(self, data: StartIncubateRequest,  db: Session):
         tanggal_string = data.start_date
         array_tanggal = tanggal_string.split('-')
         tahun = int(array_tanggal[0])
@@ -139,12 +135,31 @@ class InkubatorControlService:
             db.add(insert)
             db.commit()
             db.refresh(insert)
-            return WebResponseData(data="ok")
+            new_message = {
+                "retry": self.RETRY_TIMEOUT,
+                "data": {
+                    "id": insert.id,
+                    # "temp": insert.temp_limit,
+                    # "humd": insert.humd_limit
+                }
+            }
+            if str(data.id_inkubator) in client_data.connected_inku_client:
+                inkubator_data = client_data.connected_inku_client[str(
+                    data.id_inkubator)]
+                inkubator_data[1].put_nowait(new_message)
+                return WebResponseData(data="ok")
+            else:
+                return WebResponseData(errors=f"Inkubator with id {data.id_inkubator} not online", code=status.HTTP_400_BAD_REQUEST)
         except SQLAlchemyError as e:
             print(e)
             return None
 
-    def inseerHatchDetail():
-        return {
-            "none": "super"
-        }
+    # def insertHatchDetail():
+    #     try:
+    #         insert = DetailHatchDataModel(
+
+    #         )
+    #     except SQLAlchemyError as e :
+    #     return {
+    #         "none": "super"
+    #     }

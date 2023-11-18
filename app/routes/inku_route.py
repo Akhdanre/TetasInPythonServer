@@ -19,7 +19,7 @@ routeInku = APIRouter()
 @routeInku.get('/sse/control/temp/{user_id}/{token}')
 async def message_stream(request: Request, user_id: str, token: str):
     return EventSourceResponse(
-        InkuStreamService().event_generator(request, user_id, token),
+        InkuStreamService().event_generator_inku(request, user_id, token),
         ping=60,
         ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
 
@@ -57,10 +57,10 @@ path = "assets/image"
 
 
 @routeInku.post("/api/inku/image")
-async def post_image(file: UploadFile, id : int):
+async def post_image(file: UploadFile, id: int):
     contents = await file.read()
     file_path = f"{path}/{file.filename}"
-    
+
     with open(file_path, "wb") as image_file:
         image_file.write(contents)
 
@@ -68,5 +68,5 @@ async def post_image(file: UploadFile, id : int):
 
 
 @routeInku.post("/api/usr/start/inku")
-def post_start_inkubating(request : StartIncubateRequest,  db: Session = Depends(get_db)):
-    return InkubatorControlService.startIncubate(request, db)
+def post_start_inkubating(request: StartIncubateRequest,  db: Session = Depends(get_db)):
+    return InkubatorControlService().startIncubate(request, db)

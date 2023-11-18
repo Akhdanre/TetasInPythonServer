@@ -7,7 +7,7 @@ class InkuStreamService:
         self.STREAM_DELAY = 1
         self.MESSAGE_STREAM_RETRY_TIMEOUT = 15000
 
-    async def event_generator(self, request, user_id, token):
+    async def event_generator_inku(self, request, user_id, token):
         client_queue = asyncio.Queue()
         connected_inku_client[user_id] = [token, client_queue]
         try:
