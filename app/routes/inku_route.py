@@ -2,34 +2,34 @@ from fastapi import APIRouter, Depends, Request, Header, File, UploadFile, WebSo
 from sqlalchemy.orm import Session
 from app.utils.deps import get_db
 from sse_starlette import EventSourceResponse, ServerSentEvent
-from app.service.inku_stream_service import ConnectionManager, InkuStreamService
+from app.service.inku_stream_service import ConnectionManager
 from app.service.inkubator_service import InkubatorControlService
 from app.service.image_procesing_service import ImageProccesingService
 from datetime import datetime
 from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest
 from typing import Annotated, Union
 from PIL import Image
-import io
+import json
 
 routeInku = APIRouter()
 
 # realtime server sent event
 
 
-@routeInku.get('/sse/control/{inku_id}/{token}')
-async def message_stream(request: Request, inku_id: int, token: str):
-    return EventSourceResponse(
-        InkuStreamService().event_generator_inku(request, inku_id, token),
-        ping=60,
-        ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
+# @routeInku.get('/sse/control/{inku_id}/{token}')
+# async def message_stream(request: Request, inku_id: int, token: str):
+#     return EventSourceResponse(
+#         InkuStreamService().event_generator_inku(request, inku_id, token),
+#         ping=60,
+#         ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
 
 
-@routeInku.get('/sse/info/hatch')
-async def message_stream(request: Request, user_id: str, token: str):
-    return EventSourceResponse(
-        InkuStreamService().event_generator_mobile(request, user_id, token),
-        ping=60,
-        ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
+# @routeInku.get('/sse/info/hatch')
+# async def message_stream(request: Request, user_id: str, token: str):
+#     return EventSourceResponse(
+#         InkuStreamService().event_generator_mobile(request, user_id, token),
+#         ping=60,
+#         ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
 
 
 # http method
@@ -80,6 +80,14 @@ def post_report_inkubator(request: AddDetailHatchRequest, db: Session = Depends(
 manager = ConnectionManager()
 
 
-@routeInku.websocket("/ws/control/{inku_id}/{token}")
-async def Websocket_endpoint(websocket: WebSocket, room_id: str):
-    await manager.connect(room_id, websocket)
+@routeInku.websocket("/ws/control")
+async def Websocket_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            # await manager.send_personal_message(data, websocket)
+            await manager.broadcast(data, websocket)
+    except Exception as e:
+        print("Got an exception ", e)
+        await manager.disconnect(websocket)
