@@ -6,3 +6,5 @@ passlib[bcrypt]
 joblib
 python-multipart
 scikit-learn
+websocket
+

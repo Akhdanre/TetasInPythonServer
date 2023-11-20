@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, Request, Header, File, UploadFile
+from fastapi import APIRouter, Depends, Request, Header, File, UploadFile, WebSocket
 from sqlalchemy.orm import Session
 from app.utils.deps import get_db
 from sse_starlette import EventSourceResponse, ServerSentEvent
-from app.service.inku_stream_service import InkuStreamService
+from app.service.inku_stream_service import ConnectionManager, InkuStreamService
 from app.service.inkubator_service import InkubatorControlService
 from app.service.image_procesing_service import ImageProccesingService
 from datetime import datetime
@@ -16,10 +16,10 @@ routeInku = APIRouter()
 # realtime server sent event
 
 
-@routeInku.get('/sse/control/temp/{user_id}/{token}')
-async def message_stream(request: Request, user_id: str, token: str):
+@routeInku.get('/sse/control/{inku_id}/{token}')
+async def message_stream(request: Request, inku_id: int, token: str):
     return EventSourceResponse(
-        InkuStreamService().event_generator_inku(request, user_id, token),
+        InkuStreamService().event_generator_inku(request, inku_id, token),
         ping=60,
         ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
 
@@ -57,7 +57,7 @@ path = "assets/image"
 
 
 @routeInku.post("/api/inku/image")
-async def post_image(file: UploadFile, id: int):
+async def post_image(file: UploadFile):
     contents = await file.read()
     file_path = f"{path}/{file.filename}"
 
@@ -73,5 +73,13 @@ def post_start_inkubating(request: StartIncubateRequest,  db: Session = Depends(
 
 
 @routeInku.post("/api/inku/report")
-def post_report_inkubator(request : AddDetailHatchRequest, db: Session = Depends(get_db)):
+def post_report_inkubator(request: AddDetailHatchRequest, db: Session = Depends(get_db)):
     return InkubatorControlService.insertHatchDetail(request, db)
+
+
+manager = ConnectionManager()
+
+
+@routeInku.websocket("/ws/control/{inku_id}/{token}")
+async def Websocket_endpoint(websocket: WebSocket, room_id: str):
+    await manager.connect(room_id, websocket)
