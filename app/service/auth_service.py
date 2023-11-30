@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException, status
 from app.model import models
 from uuid import uuid4
-from app.utils.deps import get_password_context
+from app.utils import get_password_context, WebResponseData
 
 
 class Authetication:
@@ -20,12 +20,7 @@ class Authetication:
                 return schema.WebResponse(data={
                     "token": user.token
                 })
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail={
-                    "errors": "user unauthorized"
-                }
-            )
+            return WebResponseData(code=401, errors="user unauthorized")
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

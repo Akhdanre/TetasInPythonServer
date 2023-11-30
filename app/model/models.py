@@ -16,12 +16,6 @@ class UserModel(Base):
 
     inkubators = relationship("InkubatorsModel", back_populates="user")
 
-    # def __repr__(self):
-    #     return {
-    #         "username ": self.username,
-    #         "name" : self.name
-    #     }
-
 
 class InkubatorsModel(Base):
     __tablename__ = "inkubators"

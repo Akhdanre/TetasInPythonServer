@@ -34,7 +34,7 @@ def test_logout():
         json={
             "username": "akeoneuefo",
             "password": "superone",
-            "name": "akeoneufo",
+            "name": "akeoneufo"
         },
     )
 
