@@ -81,13 +81,12 @@ manager = ConnectionManager()
 
 
 @routeInku.websocket("/ws/control")
-async def Websocket_endpoint(websocket: WebSocket):
+async def Websocket_endpoint(websocket: WebSocket, db:  Session = Depends(get_db)):
     await manager.connect(websocket)
     try:
         while True:
             data = await websocket.receive_text()
-            # await manager.send_personal_message(data, websocket)
-            await manager.broadcast(data, websocket)
+            await manager.on_message(data, websocket, db)
     except Exception as e:
         print("Got an exception ", e)
         await manager.disconnect(websocket)
