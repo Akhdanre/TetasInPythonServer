@@ -33,7 +33,7 @@ class ConnectionManager:
                     "action": "send_info",
                     "data": response
                 }
-                await self.send_personal_message(str(response_message), websocket)
+                await self.send_personal_message(json.dumps(response_message), websocket)
 
         elif data["action"] == "post":
             if data["request"] == "send_data":
