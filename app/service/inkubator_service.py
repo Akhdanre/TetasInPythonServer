@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc
 from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data, DetailHatchDataModel
-from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest
+from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
 from fastapi import status
 from app.utils import WebResponseData, ExceptionCustom
 from datetime import datetime, timedelta
@@ -170,13 +170,14 @@ class InkubatorControlService:
             print(e)
             return None
 
-
-    def addUserInkubator(request: userInkuRequest, db : Session):
+    def addUserInkubator(request: UserInkuRequest, db: Session):
         try:
-            update = db.query(InkubatorsModel).filter_by(id=UserInkuRequest.id, token=UsernInkuRequest.token);     
+            update = db.query(InkubatorsModel).filter_by(
+                id=UserInkuRequest.id, token=UserInkuRequest.token)
+            update.username = UserInkuRequest.username
             db.commit()
             db.refresh(update)
 
-        except SQLAlchemyError as e :
+        except SQLAlchemyError as e:
             print(e)
             return None

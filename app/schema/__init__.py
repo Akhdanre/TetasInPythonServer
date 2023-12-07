@@ -5,3 +5,4 @@ from .auth_request import AuthRequest
 from .inku_temp_request import InkuTempRequest
 from .start_incubate_request import StartIncubateRequest
 from .add_detail_hatch_request import AddDetailHatchRequest
+from .user_inku_request import UserInkuRequest
