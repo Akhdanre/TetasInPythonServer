@@ -21,8 +21,6 @@ class ConnectionManager:
         data = json.loads(message)
 
         if data["action"] == "send":
-            response = self.get_temp_and_humd(db)
-
             await self.broadcast(message, websocket)
 
         elif data["action"] == "get":
@@ -31,6 +29,16 @@ class ConnectionManager:
                 response_message = {
                     "sender": "server",
                     "action": "send_info",
+                    "data": response
+                }
+                await self.send_personal_message(json.dumps(response_message), websocket)
+
+        elif data["action"] == "get":
+            if data["request"] == "info_limit":
+                response = self.get_temp_and_humd_limit(db)
+                response_message = {
+                    "sender": "server",
+                    "action": "send_limit",
                     "data": response
                 }
                 await self.send_personal_message(json.dumps(response_message), websocket)
@@ -71,5 +79,14 @@ class ConnectionManager:
                 "temp": exist_inku.temp_value,
                 "humd": exist_inku.humd_value,
                 "water": exist_inku.water_volume
+            }
+        return None
+
+    def get_temp_and_humd_limit(self, db: Session):
+        exist_inku = db.query(models.InkubatorsModel).filter_by(id=1).first()
+        if exist_inku:
+            return {
+                "temp": exist_inku.temp_limit,
+                "humd": exist_inku.humd_limit,
             }
         return None
