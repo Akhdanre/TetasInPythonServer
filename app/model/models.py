@@ -20,7 +20,7 @@ class UserModel(Base):
 class InkubatorsModel(Base):
     __tablename__ = "inkubators"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String(7), primary_key=True, index=True)
     token = Column(String(10), index=True)
     temp_limit = Column(Integer)
     humd_limit = Column(Integer)
@@ -37,14 +37,16 @@ class HatchDataModel(Base):
     __tablename__ = "hatch_data"
 
     id = Column(Integer, primary_key=True, index=True)
-    inkubator_id = Column(Integer, ForeignKey(
+    inkubator_id = Column(String(7), ForeignKey(
         "inkubators.id"))  # Foreign key relationship
     start_date = Column(Date)
     end_date_estimation = Column(Date)
     number_of_eggs = Column(Integer)
 
     inkubator = relationship("InkubatorsModel", back_populates="hatch_data")
-    detail_hatch_relation = relationship("DetailHatchDataModel", back_populates="hatch_datas")
+    detail_hatch_relation = relationship(
+        "DetailHatchDataModel", back_populates="hatch_datas")
+
 
 class DetailHatchDataModel(Base):
     __tablename__ = "detail_hatch_data"
@@ -58,4 +60,5 @@ class DetailHatchDataModel(Base):
     date_report = Column(Date)
     url_image = Column(String(100))
 
-    hatch_datas = relationship("HatchDataModel", back_populates="detail_hatch_relation")
+    hatch_datas = relationship(
+        "HatchDataModel", back_populates="detail_hatch_relation")

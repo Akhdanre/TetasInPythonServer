@@ -173,9 +173,9 @@ class InkubatorControlService:
     def addUserInkubator(request: UserInkuRequest, db: Session):
         try:
             update = db.query(InkubatorsModel).filter_by(
-                id=UserInkuRequest.id, token=UserInkuRequest.token)
+                id=request.id, token=request.token).first()
             if update:
-                update.username = UserInkuRequest.username
+                update.username = request.username
                 db.commit()
                 db.refresh(update)
                 return WebResponseData(data="ok")

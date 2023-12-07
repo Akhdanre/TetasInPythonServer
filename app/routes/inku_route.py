@@ -78,7 +78,7 @@ def post_report_inkubator(request: AddDetailHatchRequest, db: Session = Depends(
 
 
 @routeInku.post("/api/inku/user")
-def post_report_inkubator(request: UserInkuRequest, db: Session = Depends(get_db)):
+def post_add_username_inku(request: UserInkuRequest, db: Session = Depends(get_db)):
     return InkubatorControlService.addUserInkubator(request, db)
 
 
