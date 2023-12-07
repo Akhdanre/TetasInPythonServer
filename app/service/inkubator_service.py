@@ -174,10 +174,12 @@ class InkubatorControlService:
         try:
             update = db.query(InkubatorsModel).filter_by(
                 id=UserInkuRequest.id, token=UserInkuRequest.token)
-            update.username = UserInkuRequest.username
-            db.commit()
-            db.refresh(update)
-
+            if update:
+                update.username = UserInkuRequest.username
+                db.commit()
+                db.refresh(update)
+                return WebResponseData(data="ok")
+            return WebResponseData(errors="inkubator not found", code=404)
         except SQLAlchemyError as e:
             print(e)
             return None

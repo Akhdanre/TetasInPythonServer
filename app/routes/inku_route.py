@@ -6,7 +6,7 @@ from app.service.inku_stream_service import ConnectionManager
 from app.service.inkubator_service import InkubatorControlService
 from app.service.image_procesing_service import ImageProccesingService
 from datetime import datetime
-from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest
+from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
 from typing import Annotated, Union
 from PIL import Image
 import json
@@ -77,6 +77,12 @@ def post_report_inkubator(request: AddDetailHatchRequest, db: Session = Depends(
     return InkubatorControlService.insertHatchDetail(request, db)
 
 
+@routeInku.post("/api/inku/user")
+def post_report_inkubator(request: UserInkuRequest, db: Session = Depends(get_db)):
+    return InkubatorControlService.addUserInkubator(request, db)
+
+
+# WebSocket
 manager = ConnectionManager()
 
 
