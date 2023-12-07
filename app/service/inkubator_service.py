@@ -169,3 +169,14 @@ class InkubatorControlService:
         except SQLAlchemyError as e:
             print(e)
             return None
+
+
+    def addUserInkubator(request: userInkuRequest, db : Session):
+        try:
+            update = db.query(InkubatorsModel).filter_by(id=UserInkuRequest.id, token=UsernInkuRequest.token);     
+            db.commit()
+            db.refresh(update)
+
+        except SQLAlchemyError as e :
+            print(e)
+            return None
