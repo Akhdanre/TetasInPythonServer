@@ -62,7 +62,7 @@ class ConnectionManager:
                 await connect.send_text(message)
 
     def set_temp_and_humd(self, temp: int, humd: int, water: int, db: Session):
-        exist_inku = db.query(models.InkubatorsModel).filter_by(id=1).first()
+        exist_inku = db.query(models.InkubatorsModel).filter_by(id="INK0001").first()
 
         if exist_inku:
             exist_inku.humd_value = humd
@@ -73,7 +73,7 @@ class ConnectionManager:
             db.refresh(exist_inku)
 
     def get_temp_and_humd(self, db: Session):
-        exist_inku = db.query(models.InkubatorsModel).filter_by(id=1).first()
+        exist_inku = db.query(models.InkubatorsModel).filter_by(id="INK0001").first()
         if exist_inku:
             return {
                 "temp": exist_inku.temp_value,
@@ -83,7 +83,7 @@ class ConnectionManager:
         return None
 
     def get_temp_and_humd_limit(self, db: Session):
-        exist_inku = db.query(models.InkubatorsModel).filter_by(id=1).first()
+        exist_inku = db.query(models.InkubatorsModel).filter_by(id="INK0001").first()
         if exist_inku:
             return {
                 "temp": exist_inku.temp_limit,
