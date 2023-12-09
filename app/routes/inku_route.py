@@ -5,6 +5,7 @@ from sse_starlette import EventSourceResponse, ServerSentEvent
 from app.service.inku_stream_service import ConnectionManager
 from app.service.inkubator_service import InkubatorControlService
 from app.service.image_procesing_service import ImageProccesingService
+from app.service.sse_stream_service import SSEStreamService
 from datetime import datetime
 from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
 from typing import Annotated, Union
@@ -16,20 +17,12 @@ routeInku = APIRouter()
 # realtime server sent event
 
 
-# @routeInku.get('/sse/control/{inku_id}/{token}')
-# async def message_stream(request: Request, inku_id: int, token: str):
-#     return EventSourceResponse(
-#         InkuStreamService().event_generator_inku(request, inku_id, token),
-#         ping=60,
-#         ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
-
-
-# @routeInku.get('/sse/info/hatch')
-# async def message_stream(request: Request, user_id: str, token: str):
-#     return EventSourceResponse(
-#         InkuStreamService().event_generator_mobile(request, user_id, token),
-#         ping=60,
-#         ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
+@routeInku.get('/sse/info/hatch')
+async def message_stream(request: Request, user_id: str, token: str):
+    SSEStreamService.event_generator_mobile()
+    return EventSourceResponse(
+        ping=60,
+        ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
 
 
 # http method
