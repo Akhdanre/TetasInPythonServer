@@ -5,6 +5,7 @@ from skimage.feature.texture import graycomatrix, graycoprops
 from PIL import Image
 from rembg import remove
 from app.utils import WebResponseData
+from app.model import connected_user_client
 
 
 class ImageProccesingService():
@@ -52,12 +53,26 @@ class ImageProccesingService():
 
         # Print messages based on the predicted category
         if predicted_category[0] == 'retak':
-            return WebResponseData(data={
-                "Condition": True,
+            data_result = {
+                "condition": True,
                 "message": "Telur sudah retak"
-            })
+            }
+
+            event_message_data = {
+                "event": "new_message",
+                "id": "message_id",
+                "retry": 15000,
+                "data": data_result}
+            self.sendToUser(event_message_data)
+            return WebResponseData(data=data_result)
         else:
             return WebResponseData(data={
-                "Condition": False,
+                "condition": False,
                 "message": "Telur tidak retak"
             })
+
+    def sendToUser(self, message):
+        user_id = "oukenze"
+        if user_id in connected_user_client:
+            _, client_queue = connected_user_client[user_id]
+            client_queue.put_nowait(message)

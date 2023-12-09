@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request, Header, File, UploadFile, WebSocket
+from fastapi import APIRouter, Depends, Request, Header, UploadFile, WebSocket
 from sqlalchemy.orm import Session
 from app.utils.deps import get_db
 from sse_starlette import EventSourceResponse, ServerSentEvent
@@ -17,10 +17,10 @@ routeInku = APIRouter()
 # realtime server sent event
 
 
-@routeInku.get('/sse/info/hatch')
-async def message_stream(request: Request, user_id: str, token: str):
-    SSEStreamService.event_generator_mobile()
+@routeInku.get('/sse/{user_id}/{token}')
+async def message_stream_mobile(request: Request, user_id: str, token: str):
     return EventSourceResponse(
+        SSEStreamService().event_generator_mobile(request, user_id, token),
         ping=60,
         ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
 
