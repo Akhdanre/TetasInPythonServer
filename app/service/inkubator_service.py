@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data, DetailHatchDataModel
 from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
 from fastapi import status
@@ -180,6 +180,21 @@ class InkubatorControlService:
                 db.refresh(update)
                 return WebResponseData(data="ok")
             return WebResponseData(errors="inkubator not found", code=404)
+        except SQLAlchemyError as e:
+            print(e)
+            return None
+
+    def searchDataHistory(token: str, findTxt: str, db: Session):
+        try:
+            data = db.query(HatchDataModel) \
+                .filter(
+                    or_(
+                        HatchDataModel.id.ilike == findTxt,
+                        HatchDataModel.start_date == findTxt,
+                        HatchDataModel.end_date_estimation == findTxt)) \
+                .all()
+            if data:
+                return WebResponseData(data=data)
         except SQLAlchemyError as e:
             print(e)
             return None
