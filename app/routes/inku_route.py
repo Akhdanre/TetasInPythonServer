@@ -92,5 +92,5 @@ def post_add_username_inku(request: UserInkuRequest, db: Session = Depends(get_d
 
 
 @routeInku.get("/api/history/{textSearch}")
-def get_history_search(textSearch: str, X_API_TOKEN: Annotated[Union[str, None], Header()] = None):
-    return InkubatorControlService.searchDataHistory(findTxt=textSearch, token=X_API_TOKEN)
+def get_history_search(textSearch: str, X_API_TOKEN: Annotated[Union[str, None], Header()] = None,  db: Session = Depends(get_db)):
+    return InkubatorControlService.searchDataHistory(findTxt=textSearch, token=X_API_TOKEN, db=db)

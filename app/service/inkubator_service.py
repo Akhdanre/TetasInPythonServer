@@ -189,12 +189,13 @@ class InkubatorControlService:
             data = db.query(HatchDataModel) \
                 .filter(
                     or_(
-                        HatchDataModel.id.ilike == findTxt,
-                        HatchDataModel.start_date == findTxt,
-                        HatchDataModel.end_date_estimation == findTxt)) \
+                        HatchDataModel.id.ilike(f"%{findTxt}%"),
+                        HatchDataModel.start_date.ilike(f"%{findTxt}%"),
+                        HatchDataModel.end_date_estimation.ilike(f"%{findTxt}%"))) \
                 .all()
             if data:
                 return WebResponseData(data=data)
+            return WebResponseData(errors="data not found", code=400)
         except SQLAlchemyError as e:
             print(e)
-            return None
+            return WebResponseData(errors="something wrong", code=500)
