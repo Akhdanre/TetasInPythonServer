@@ -47,6 +47,16 @@ class HatchDataModel(Base):
     detail_hatch_relation = relationship(
         "DetailHatchDataModel", back_populates="hatch_datas")
 
+    def to_dict(self):
+        """convert data hatch to list"""
+        return {
+            "id": self.id,
+            "inkubator": self.inkubator_id,
+            "start_data": str(self.start_date),
+            "end_data": str(self.end_date_estimation),
+            "number_of_egg": self.number_of_eggs
+        }
+
 
 class DetailHatchDataModel(Base):
     __tablename__ = "detail_hatch_data"
