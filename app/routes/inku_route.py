@@ -25,6 +25,22 @@ async def message_stream_mobile(request: Request, user_id: str, token: str):
         ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
 
 
+# WebSocket
+manager = ConnectionManager()
+
+
+@routeInku.websocket("/ws/control")
+async def Websocket_endpoint(websocket: WebSocket, db:  Session = Depends(get_db)):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            await manager.on_message(data, websocket, db)
+    except Exception as e:
+        print("Got an exception ", e)
+        await manager.disconnect(websocket)
+
+
 # http method
 @routeInku.post("/api/control/temp_humd")
 def message_data(data: InkuTempRequest, db: Session = Depends(get_db)):
@@ -75,17 +91,6 @@ def post_add_username_inku(request: UserInkuRequest, db: Session = Depends(get_d
     return InkubatorControlService.addUserInkubator(request, db)
 
 
-# WebSocket
-manager = ConnectionManager()
-
-
-@routeInku.websocket("/ws/control")
-async def Websocket_endpoint(websocket: WebSocket, db:  Session = Depends(get_db)):
-    await manager.connect(websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            await manager.on_message(data, websocket, db)
-    except Exception as e:
-        print("Got an exception ", e)
-        await manager.disconnect(websocket)
+@routeInku.get("/api/history/{textSearch}")
+def get_history_search(textSearch: str, X_API_TOKEN: Annotated[Union[str, None], Header()] = None):
+    return InkubatorControlService.searchDataHistory(findTxt=textSearch, token=X_API_TOKEN)
