@@ -7,7 +7,6 @@ class SSEStreamService():
     async def event_generator_mobile(self, request, user_id, token):
         client_queue = asyncio.Queue()
         connected_user_client[user_id] = [token, client_queue]
-
         try:
             while True:
                 if await request.is_disconnected():

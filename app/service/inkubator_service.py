@@ -194,10 +194,20 @@ class InkubatorControlService:
                         HatchDataModel.end_date_estimation.ilike(f"%{findTxt}%"))) \
                 .all()
             if data:
-                dataItem = [HatchDataModel.to_dict() for HatchDataModel in data]
+                dataItem = [HatchDataModel.to_dict()
+                            for HatchDataModel in data]
                 print(dataItem)
                 return WebResponseData(data=dataItem)
             return WebResponseData(errors="data not found", code=404)
+        except SQLAlchemyError as e:
+            print(f"error : {e}")
+            return WebResponseData(errors="something wrong", code=500)
+
+    def getDayProgress(token: str, inkubator_id: str, db: Session):
+        try:
+            data = db.query(DetailHatchDataModel).filter_by(
+                id_hatch_data=inkubator_id).group_by(DetailHatchDataModel.date_report).all()
+            
         except SQLAlchemyError as e:
             print(f"error : {e}")
             return WebResponseData(errors="something wrong", code=500)
