@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import desc, or_
+from sqlalchemy import desc, or_, func
 from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data, DetailHatchDataModel
 from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
 from fastapi import status
@@ -203,11 +203,16 @@ class InkubatorControlService:
             print(f"error : {e}")
             return WebResponseData(errors="something wrong", code=500)
 
-    def getDayProgress(token: str, inkubator_id: str, db: Session):
+    def getDayProgress(token: str, inkubator_id: int, db: Session):
         try:
-            data = db.query(DetailHatchDataModel).filter_by(
-                id_hatch_data=inkubator_id).group_by(DetailHatchDataModel.date_report).all()
-            
+
+            result = db.query(func.count(func.distinct(DetailHatchDataModel.date_report)))\
+                .filter_by(id_hatch_data=inkubator_id)\
+                .scalar()
+
+            if result:
+                return WebResponseData(data=result)
+            return WebResponseData(errors="progress not found", code=204)
         except SQLAlchemyError as e:
             print(f"error : {e}")
             return WebResponseData(errors="something wrong", code=500)
