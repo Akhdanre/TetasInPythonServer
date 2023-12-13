@@ -97,5 +97,5 @@ def get_history_search(textSearch: str, X_API_TOKEN: Annotated[Union[str, None],
 
 
 @routeInku.get("/api/progress/{id_inkubator}")
-def get_day_progress(id_inkubator: int, X_API_TOKEN: Annotated[Union[str, None], Header()] = None,  db: Session = Depends(get_db)):
+def get_day_progress(id_inkubator: str, X_API_TOKEN: Annotated[Union[str, None], Header()] = None,  db: Session = Depends(get_db)):
     return InkubatorControlService.getDayProgress(X_API_TOKEN, id_inkubator, db)

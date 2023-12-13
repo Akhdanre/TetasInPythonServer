@@ -1,3 +1,4 @@
+fastapi
 uvicorn
 sqlalchemy
 pydantic
@@ -7,4 +8,5 @@ joblib
 python-multipart
 scikit-learn
 websocket
-
+opencv-python
+rembg

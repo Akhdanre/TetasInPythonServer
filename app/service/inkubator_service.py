@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc, or_, func
 from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data, DetailHatchDataModel
 from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
-from fastapi import status
+from fastapi import status, Response
 from app.utils import WebResponseData, ExceptionCustom
 from datetime import datetime, timedelta
 
@@ -203,16 +203,20 @@ class InkubatorControlService:
             print(f"error : {e}")
             return WebResponseData(errors="something wrong", code=500)
 
-    def getDayProgress(token: str, inkubator_id: int, db: Session):
+    def getDayProgress(token: str, inkubator_id: str, db: Session):
+
         try:
-
-            result = db.query(func.count(func.distinct(DetailHatchDataModel.date_report)))\
-                .filter_by(id_hatch_data=inkubator_id)\
+            runningInku = db.query(HatchDataModel.id).filter_by(
+                inkubator_id=inkubator_id).order_by(HatchDataModel.start_date.desc()).first()
+            if runningInku is None:
+                return WebResponseData(errors="data incubator empty", code=400)
+            
+            countResult = db.query(func.count(func.distinct(DetailHatchDataModel.date_report)))\
+                .filter_by(id_hatch_data=runningInku[0])\
                 .scalar()
-
-            if result:
-                return WebResponseData(data=result)
-            return WebResponseData(errors="progress not found", code=204)
+            if countResult:
+                return WebResponseData(data=countResult)
+            return WebResponseData(data="progress not found", code=204)
         except SQLAlchemyError as e:
             print(f"error : {e}")
             return WebResponseData(errors="something wrong", code=500)
