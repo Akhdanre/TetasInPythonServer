@@ -196,7 +196,6 @@ class InkubatorControlService:
             if data:
                 dataItem = [HatchDataModel.to_dict()
                             for HatchDataModel in data]
-                print(dataItem)
                 return WebResponseData(data=dataItem)
             return WebResponseData(errors="data not found", code=404)
         except SQLAlchemyError as e:
@@ -204,16 +203,22 @@ class InkubatorControlService:
             return WebResponseData(errors="something wrong", code=500)
 
     def getDayProgress(token: str, inkubator_id: str, db: Session):
-
+        datenow = datetime.now().date()
         try:
-            runningInku = db.query(HatchDataModel.id).filter_by(
+            
+            runningInku = db.query(HatchDataModel.id, HatchDataModel.end_date_estimation).filter_by(
                 inkubator_id=inkubator_id).order_by(HatchDataModel.start_date.desc()).first()
+            
             if runningInku is None:
                 return WebResponseData(errors="data incubator empty", code=400)
             
+            if runningInku[1] < datenow:
+                return WebResponseData(errors="Inkubator is not in hatch progress", code=400)
+
             countResult = db.query(func.count(func.distinct(DetailHatchDataModel.date_report)))\
                 .filter_by(id_hatch_data=runningInku[0])\
                 .scalar()
+
             if countResult:
                 return WebResponseData(data=countResult)
             return WebResponseData(data="progress not found", code=204)
