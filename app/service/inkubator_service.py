@@ -205,15 +205,15 @@ class InkubatorControlService:
     def getDayProgress(token: str, inkubator_id: str, db: Session):
         datenow = datetime.now().date()
         try:
-            
+
             runningInku = db.query(HatchDataModel.id, HatchDataModel.end_date_estimation).filter_by(
                 inkubator_id=inkubator_id).order_by(HatchDataModel.start_date.desc()).first()
-            
+
             if runningInku is None:
-                return WebResponseData(errors="data incubator empty", code=400)
-            
+                return WebResponseData(errors="data incubator empty", code=status.HTTP_401_UNAUTHORIZED)
+
             if runningInku[1] < datenow:
-                return WebResponseData(errors="Inkubator is not in hatch progress", code=400)
+                return WebResponseData(errors="Inkubator is not in hatch progress", code=status.HTTP_401_UNAUTHORIZED)
 
             countResult = db.query(func.count(func.distinct(DetailHatchDataModel.date_report)))\
                 .filter_by(id_hatch_data=runningInku[0])\
@@ -221,7 +221,7 @@ class InkubatorControlService:
 
             if countResult:
                 return WebResponseData(data=countResult)
-            return WebResponseData(data="progress not found", code=204)
+            return WebResponseData(data=1, code=200)
         except SQLAlchemyError as e:
             print(f"error : {e}")
             return WebResponseData(errors="something wrong", code=500)
