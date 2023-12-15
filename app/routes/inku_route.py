@@ -68,12 +68,14 @@ path = "assets/image"
 @routeInku.post("/api/inku/image")
 async def post_image(file: UploadFile):
     contents = await file.read()
-    file_path = f"{path}/{file.filename}"
+
+    filename = f"{str(datetime.now().date())}-{file.filename}"
+    file_path = f"{path}/{filename}"
 
     with open(file_path, "wb") as image_file:
         image_file.write(contents)
 
-    return ImageProccesingService().EggCrackDetection(file.filename)
+    return ImageProccesingService().EggCrackDetection(filename)
 
 
 @routeInku.post("/api/usr/start/inku")
