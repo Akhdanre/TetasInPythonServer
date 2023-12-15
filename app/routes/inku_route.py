@@ -10,7 +10,7 @@ from datetime import datetime
 from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
 from typing import Annotated, Union
 from PIL import Image
-import json
+import os
 
 routeInku = APIRouter()
 
@@ -70,7 +70,8 @@ async def post_image(file: UploadFile):
     contents = await file.read()
     datenow = datetime.now()
     filename = f"{str(datenow.date())}-{str(datenow.time())}-{file.filename}"
-    file_path = f"{path}/{filename}"
+
+    file_path = os.path.join(path, filename)
 
     with open(file_path, "wb") as image_file:
         image_file.write(contents)
