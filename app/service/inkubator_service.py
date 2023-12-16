@@ -233,9 +233,9 @@ class InkubatorControlService:
             if user is None:
                 return WebResponseData(errors="user not found")
             ListInku = db.query(InkubatorsModel.id).filter_by(
-                username=user).all()
+                username=user.username).all()
             if ListInku:
-                ListInku = [username for username in ListInku]
+                ListInku = [data.id for data in ListInku]
                 return WebResponseData(data=ListInku)
 
             return WebResponseData(errors="Tidak ada inkubator yang terdaftar")

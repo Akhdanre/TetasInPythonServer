@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from app.routes import api_router
 from app.model import models
 from app.database import dbConfig
+import uvicorn
 
 
 @asynccontextmanager
