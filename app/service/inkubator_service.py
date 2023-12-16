@@ -225,3 +225,23 @@ class InkubatorControlService:
         except SQLAlchemyError as e:
             print(f"error : {e}")
             return WebResponseData(errors="something wrong", code=500)
+
+    def getInkubatorList(token: str, db: Session):
+        try:
+            user = db.query(UserModel.username).filter_by(
+                token=token).first()
+            
+            if user is None:
+                return WebResponseData(errors="user not found")
+            
+            ListInku = db.query(InkubatorsModel.id).filter_by(
+                username=user).all()
+            
+            if ListInku:
+                ListInku = [username for username in ListInku]
+                return WebResponseData(data=ListInku)
+
+            return WebResponseData(errors="Tidak ada inkubator yang terdaftar")
+        except SQLAlchemyError as e:
+            print(f"error : {e}")
+            return WebResponseData(errors="something wrong", code=500)
