@@ -230,13 +230,10 @@ class InkubatorControlService:
         try:
             user = db.query(UserModel.username).filter_by(
                 token=token).first()
-
             if user is None:
                 return WebResponseData(errors="user not found")
-            print(user)
             ListInku = db.query(InkubatorsModel.id).filter_by(
                 username=user).all()
-
             if ListInku:
                 ListInku = [username for username in ListInku]
                 return WebResponseData(data=ListInku)
