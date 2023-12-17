@@ -231,14 +231,14 @@ class InkubatorControlService:
             user = db.query(UserModel.username).filter_by(
                 token=token).first()
             if user is None:
-                return WebResponseData(errors="user not found")
+                return WebResponseData(errors="user not found", code=status.HTTP_400_BAD_REQUEST)
             ListInku = db.query(InkubatorsModel.id).filter_by(
                 username=user.username).all()
             if ListInku:
                 ListInku = [data.id for data in ListInku]
                 return WebResponseData(data=ListInku)
 
-            return WebResponseData(errors="Tidak ada inkubator yang terdaftar")
+            return WebResponseData(errors="Tidak ada inkubator yang terdaftar",  code=status.HTTP_400_BAD_REQUEST)
         except SQLAlchemyError as e:
             print(f"error : {e}")
-            return WebResponseData(errors="something wrong", code=500)
+            return WebResponseData(errors="something wrong", code=status.HTTP_500_INTERNAL_SERVER_ERROR)
