@@ -18,6 +18,8 @@ class Authetication:
                 db.commit()
                 db.refresh(user)
                 return schema.WebResponse(data={
+                    "username": user.username,
+                    "name": user.name,
                     "token": user.token
                 })
             return WebResponseData(code=401, errors="user unauthorized")
