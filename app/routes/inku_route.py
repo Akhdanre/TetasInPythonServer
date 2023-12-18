@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request, Header, UploadFile, WebSocket
+from fastapi import APIRouter, Depends, Request, Header, UploadFile, WebSocket, File
 from sqlalchemy.orm import Session
 from app.utils.deps import get_db
 from sse_starlette import EventSourceResponse, ServerSentEvent
@@ -66,17 +66,20 @@ path = "assets/image"
 
 
 @routeInku.post("/api/inku/image")
-async def post_image(file: UploadFile):
-    contents = await file.read()
-    datenow = datetime.now()
-    filename = f"{str(datenow.date())}-{str(datenow.time())}-{file.filename}"
+async def post_image(file: UploadFile = File(...)):
+    try:
+        contents = await file.read()
+        datenow = datetime.now()
+        filename = f"{str(datenow.date())}-{str(datenow.time())}-{file.filename}"
 
-    file_path = os.path.join(path, filename)
+        file_path = os.path.join(path, filename)
 
-    with open(file_path, "wb") as image_file:
-        image_file.write(contents)
+        with open(file_path, "wb") as image_file:
+            image_file.write(contents)
 
-    return ImageProccesingService().EggCrackDetection(filename)
+        return ImageProccesingService().EggCrackDetection(filename)
+    except Exception as e:
+        print(e)
 
 
 @routeInku.post("/api/usr/start/inku")
