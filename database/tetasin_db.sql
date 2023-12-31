@@ -34,7 +34,7 @@ CREATE TABLE `detail_hatch_data` (
   PRIMARY KEY (`id`),
   KEY `id_hatch_data` (`id_hatch_data`),
   CONSTRAINT `detail_hatch_data_ibfk_1` FOREIGN KEY (`id_hatch_data`) REFERENCES `hatch_data` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,7 +62,7 @@ CREATE TABLE `hatch_data` (
   PRIMARY KEY (`id`),
   KEY `inkubator_id` (`inkubator_id`),
   CONSTRAINT `hatch_data_ibfk_1` FOREIGN KEY (`inkubator_id`) REFERENCES `inkubators` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +93,7 @@ CREATE TABLE `inkubators` (
   PRIMARY KEY (`id`),
   KEY `inkubator_user` (`username`),
   CONSTRAINT `inkubator_user` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,7 +119,7 @@ CREATE TABLE `users` (
   `name` varchar(100) NOT NULL,
   `token` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

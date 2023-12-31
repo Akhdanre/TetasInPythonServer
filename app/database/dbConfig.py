@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from contextlib import contextmanager
 
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:oukenzeumasio@localhost:3306/tetasin_db"
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:root@localhost:3306/tetasin_db"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, 
