@@ -54,7 +54,7 @@ class ImageProccesingService():
         # Print messages based on the predicted category
         if predicted_category[0] == 'retak':
             data_result = {
-                "condition": True,
+                "condition": true,
                 "message": "Telur sudah retak"
             }
 
@@ -67,7 +67,7 @@ class ImageProccesingService():
             return WebResponseData(data=data_result)
         else:
             return WebResponseData(data={
-                "condition": False,
+                "condition": false,
                 "message": "Telur tidak retak"
             })
 
