@@ -1,3 +1,5 @@
+from json import JSONEncoder
+import json
 import cv2
 import numpy as np
 import joblib
@@ -54,7 +56,7 @@ class ImageProccesingService():
         # Print messages based on the predicted category
         if predicted_category[0] == 'retak':
             data_result = {
-                "condition": true,
+                "condition": True,
                 "message": "Telur sudah retak"
             }
 
@@ -63,11 +65,11 @@ class ImageProccesingService():
                 "id": "message_id",
                 "retry": 15000,
                 "data": data_result}
-            self.sendToUser(event_message_data)
+            self.sendToUser(json.dumps(event_message_data))
             return WebResponseData(data=data_result)
         else:
             return WebResponseData(data={
-                "condition": false,
+                "condition": False,
                 "message": "Telur tidak retak"
             })
 

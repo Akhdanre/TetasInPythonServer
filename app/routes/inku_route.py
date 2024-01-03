@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, Depends, Request, Header, UploadFile, WebSocket, File
 from sqlalchemy.orm import Session
 from app.utils.deps import get_db
@@ -22,7 +23,7 @@ async def message_stream_mobile(request: Request, user_id: str, token: str):
     return EventSourceResponse(
         SSEStreamService().event_generator_mobile(request, user_id, token),
         ping=60,
-        ping_message_factory=lambda: ServerSentEvent({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')}))
+        ping_message_factory=lambda: ServerSentEvent(json.dumps({"ping": datetime.today().strftime('%Y-%m-%d %H:%M:%S')})))
 
 
 # WebSocket
