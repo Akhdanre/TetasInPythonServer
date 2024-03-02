@@ -41,6 +41,7 @@ class User:
 
                 db.commit()
                 db.refresh(exist_user)
+                return WebResponseData(data="ok")
             except SQLAlchemyError as e:
                 raise ExceptionCustom(
                     status_code=500, detail=str(e))
