@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
-from app.schema import WebResponse
+from schema import WebResponse
 
 
 class ExceptionCustom(HTTPException):

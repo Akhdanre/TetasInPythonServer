@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Header
 from sqlalchemy.orm import Session
-from app.utils.deps import get_db
-import app.schema as schema
-from app.service.user_service import User
+from utils.deps import get_db
+import schema as schema
+from service.user_service import User
 from typing import Annotated, Union
 
 

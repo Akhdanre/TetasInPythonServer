@@ -6,8 +6,8 @@ import joblib
 from skimage.feature.texture import graycomatrix, graycoprops
 from PIL import Image
 from rembg import remove
-from app.utils import WebResponseData
-from app.model import connected_user_client
+from utils import WebResponseData
+from model import connected_user_client
 
 
 class ImageProccesingService():

@@ -2,8 +2,8 @@ import asyncio
 import json
 from fastapi import WebSocket, Depends
 from sqlalchemy.orm import Session
-from app.utils.deps import get_db
-from app.model import models
+from utils.deps import get_db
+from model import models
 
 
 class ConnectionManager:

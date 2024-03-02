@@ -1,5 +1,5 @@
 from fastapi.responses import JSONResponse, Response
-from app.schema import WebResponse
+from schema import WebResponse
 from typing import Union
 
 

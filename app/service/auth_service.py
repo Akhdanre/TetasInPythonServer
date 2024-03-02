@@ -1,10 +1,11 @@
-import app.schema as schema
+import schema as schema
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException, status
-from app.model import models
+from model import models
 from uuid import uuid4
-from app.utils import get_password_context, WebResponseData
+from service.validation_service import ValidationService
+from utils import WebResponseData
 
 
 class Authetication:
@@ -12,7 +13,8 @@ class Authetication:
         try:
             user = db.query(models.UserModel).filter_by(
                 username=userReq.username).first()
-            is_pass_true = get_password_context().verify(userReq.password, user.password)
+            # is_pass_true = get_password_context().verify(userReq.password, user.password)
+            is_pass_true = ValidationService().verifyPassword(userReq.password, user.password)
             if user is not None and is_pass_true:
                 user.token = uuid4()
                 db.commit()

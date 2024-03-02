@@ -1,5 +1,5 @@
 import asyncio
-from app.model import connected_user_client
+from model import connected_user_client
 
 
 class SSEStreamService():

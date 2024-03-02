@@ -1,11 +1,11 @@
-from app.database.dbConfig import session_scope
-import app.schema as schema
-from app.model import models
+from database.dbConfig import session_scope
+import schema as schema
+from model import models
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from .validation_service import ValidationService
 from fastapi import HTTPException, status
-from app.utils import get_password_context, ExceptionCustom, WebResponseData
+from utils import ExceptionCustom, WebResponseData
 
 
 class User:
@@ -17,7 +17,7 @@ class User:
             raise ExceptionCustom(
                 status_code=400, detail="username already exist")
         try:
-            hashPassword = get_password_context().hash(user.password)
+            hashPassword = ValidationService().getPasswordHash(user.password)
             db_user = models.UserModel(
                 username=user.username,
                 password=hashPassword,
@@ -36,7 +36,7 @@ class User:
             token=apiToken).first()
         if exist_user:
             try:
-                exist_user.password = get_password_context().hash(user.password)
+                exist_user.password = ValidationService().getPasswordHash(user.password)
                 exist_user.name = user.name
 
                 db.commit()

@@ -1,5 +1,5 @@
-from app.database.dbConfig import SessionLocal 
-from passlib.context import CryptContext
+from database.dbConfig import SessionLocal 
+
 
 def get_db():
     db = None
@@ -10,5 +10,3 @@ def get_db():
         db.close()
 
 
-def get_password_context():
-    return CryptContext(schemes=["bcrypt"], deprecated="auto")

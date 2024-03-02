@@ -1,14 +1,14 @@
 import json
 from fastapi import APIRouter, Depends, Request, Header, UploadFile, WebSocket, File
 from sqlalchemy.orm import Session
-from app.utils.deps import get_db
+from utils.deps import get_db
 from sse_starlette import EventSourceResponse, ServerSentEvent
-from app.service.inku_stream_service import ConnectionManager
-from app.service.inkubator_service import InkubatorControlService
-from app.service.image_procesing_service import ImageProccesingService
-from app.service.sse_stream_service import SSEStreamService
+from service.inku_stream_service import ConnectionManager
+from service.inkubator_service import InkubatorControlService
+from service.image_procesing_service import ImageProccesingService
+from service.sse_stream_service import SSEStreamService
 from datetime import datetime
-from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
+from schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
 from typing import Annotated, Union
 from PIL import Image
 import os

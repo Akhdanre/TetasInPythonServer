@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc, or_, func
-from app.model import UserModel, InkubatorsModel, HatchDataModel, client_data, DetailHatchDataModel
-from app.schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
+from model import UserModel, InkubatorsModel, HatchDataModel, client_data, DetailHatchDataModel
+from schema import InkuTempRequest, StartIncubateRequest, AddDetailHatchRequest, UserInkuRequest
 from fastapi import status, Response
-from app.utils import WebResponseData, ExceptionCustom
+from utils import WebResponseData, ExceptionCustom
 from datetime import datetime, timedelta
 
 
