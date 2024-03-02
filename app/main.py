@@ -32,4 +32,4 @@ app.include_router(api_router)
 if __name__ == "__main__":
     # run(app, host="0.0.0.0", port=443,
     #     ssl_keyfile="key.pem", ssl_certfile="cert.pem")
-    run(app, host="0.0.0.0", port=8000, reload=True)
+    run("main:app", host="0.0.0.0", port=8000, reload=True)
