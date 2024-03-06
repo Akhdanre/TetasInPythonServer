@@ -14,7 +14,7 @@ from PIL import Image
 import os
 
 routeInku = APIRouter()
-
+    
 # realtime server sent event
 
 
